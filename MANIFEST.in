@@ -1,0 +1,2 @@
+recursive-include accessstats *.thrift *.json
+recursive-include tests *.json
