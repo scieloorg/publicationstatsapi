@@ -1,2 +1,2 @@
-recursive-include accessstats *.thrift *.json
+recursive-include publicationstats *.thrift *.json
 recursive-include tests *.json

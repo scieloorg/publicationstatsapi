@@ -205,3 +205,82 @@ def collection_composition(collection, raw=False):
     computed = _compute_collection_composition(query_result)
 
     return query_result if raw else computed
+
+
+def _compute_journals_status(query_result):
+
+    result = {
+     'current': 0,
+     'suspended': 0,
+     'deceased': 0,
+     'inprogress': 0,
+     'total': 0
+    }
+
+    for item in query_result['aggregations']['status']['buckets']:
+        result[item['key']] = item['doc_count']
+        result['total'] += item['doc_count']
+
+    return result
+
+
+def journals_status(collection, raw=False):
+    """
+    This method retrieve the total of documents, articles (citable documents),
+    issues and bibliografic references of a journal
+
+    arguments
+    collection: SciELO 3 letters Acronym
+    issn: Journal ISSN
+
+    return for journal context
+    {
+        "citable": 12140,
+        "non_citable": 20,
+        "docs": 12160,
+        "issues": 120,
+        "references": 286619
+    }
+    """
+
+    tc = ThriftClient()
+
+    body = {"query": {"filtered": {}}}
+
+    fltr = {}
+
+    query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "match": {
+                            "collection": collection
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+    body['query']['filtered'].update(fltr)
+    body['query']['filtered'].update(query)
+
+    query_parameters = [
+        ('size', '0'),
+        ('search_type', 'count')
+    ]
+
+    body['aggs'] = {
+        "status": {
+            "terms": {
+                "field": "status"
+            }
+        }
+    }
+
+    query_result = tc.search('journal', json.dumps(body), query_parameters)
+
+    computed = _compute_journals_status(query_result)
+
+    return query_result if raw else computed

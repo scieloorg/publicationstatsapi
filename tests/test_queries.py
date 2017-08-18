@@ -6,6 +6,39 @@ from publicationstats import queries
 
 class PublicationStatsQueriesTest(unittest.TestCase):
 
+    def test_journals_stats(self):
+
+        query_result = {
+            '_shards': {'failed': 0, 'successful': 5, 'total': 5},
+            'aggregations': {
+                'status': {
+                    'buckets': [
+                        {'doc_count': 89, 'key': 'current'},
+                        {'doc_count': 30, 'key': 'suspended'},
+                        {'doc_count': 24, 'key': 'deceased'},
+                        {'doc_count': 4, 'key': 'inprogress'}
+                    ],
+                    'doc_count_error_upper_bound': 0,
+                    'sum_other_doc_count': 0
+                }
+            },
+            'hits': {'hits': [], 'max_score': 0.0, 'total': 147},
+            'timed_out': False,
+            'took': 74
+        }
+
+        result = queries._compute_journals_status(query_result)
+
+        expected = {
+            'current': 89,
+            'deceased': 24,
+            'inprogress': 4,
+            'suspended': 30,
+            'total': 147
+        }
+
+        self.assertEqual(expected, result)
+
     def test_compute_journal_composition(self):
 
         query_result = {
