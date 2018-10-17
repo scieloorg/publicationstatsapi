@@ -8,7 +8,7 @@ install_requires = [
 
 setup(
     name="publicationstatsapi",
-    version="1.1.0",
+    version="1.2.1",
     description="SciELO PublicationStats service SDK for Python",
     author="SciELO",
     author_email="scielo-dev@googlegroups.com",
