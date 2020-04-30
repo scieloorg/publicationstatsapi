@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-import thriftpy
+import thriftpy2
 import json
 import logging
 import time
@@ -12,7 +12,7 @@ try:
 except:
     from urlparse import urljoin
 
-from thriftpy.rpc import make_client
+from thriftpy2.rpc import make_client
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class ServerError(PublicationStatsExceptions):
 
 
 class ThriftClient(object):
-    PUBLICATIONSTATS_THRIFT = thriftpy.load(
+    PUBLICATIONSTATS_THRIFT = thriftpy2.load(
         os.path.join(os.path.dirname(__file__))+'/thrift/publication_stats.thrift')
 
     def __init__(self, domain=None):
